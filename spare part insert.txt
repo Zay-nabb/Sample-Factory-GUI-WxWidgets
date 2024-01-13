@@ -1,0 +1,148 @@
+#include <wx/wx.h>
+#include <wx/notebook.h>//our magic book
+#include <wx/spinctrl.h>
+#include<wx/mediactrl.h>
+
+
+
+
+class SpaInsertPanel : public wxPanel// class for the panel of the main page (first page in our magic book)
+{
+public:
+	//already declared in the search bar
+	wxMediaCtrl* Hit_button_Sound;
+	wxTextCtrl* spaCost;
+	wxTextCtrl* spaCount;
+	wxTextCtrl* spaName;
+	wxButton* insert_button;
+	SpaInsertPanel(wxNotebook* parent, const wxString& label, const wxString& thank, const wxString& by, const wxString& names) : wxPanel(parent)//creating panel"the second parameter is a label of type wxString which will be a text in the panel"
+	{
+
+		//3 textbox
+		//box sizer for each label and textbox
+		//wxBoxSizer* Name_and_label = new wxBoxSizer(wxHORIZONTAL);
+		//title of the insert page
+		wxStaticText* title = new wxStaticText(this, wxID_ANY, "Insert the details of our new Spare part s'il vous plait! :-)", wxPoint(200, 60), wxDefaultSize);
+		wxFont Font_title(15, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+		title->SetFont(Font_title);
+		//sparepart name
+		spaName = new wxTextCtrl(this, wxID_ANY, "name", wxPoint(100, 100), wxSize(300, -1));
+		wxStaticText* spaNameLabel = new wxStaticText(this, wxID_ANY, "spare part name", wxPoint(500, 100), wxDefaultSize);
+		spaName->SetForegroundColour(wxColour(128, 128, 128));
+		spaName->Bind(wxEVT_SET_FOCUS, &SpaInsertPanel::Press_on_sparePart_name_bar_event, this);
+
+		//sparepart count
+		spaCount = new wxTextCtrl(this, wxID_ANY, "count", wxPoint(100, 250), wxSize(300, -1));
+		wxStaticText* spaCountLabel = new wxStaticText(this, wxID_ANY, "spare part count", wxPoint(500, 250), wxDefaultSize);
+		spaCount->SetForegroundColour(wxColour(128, 128, 128));
+		spaCount->Bind(wxEVT_SET_FOCUS, &SpaInsertPanel::Press_on_sparePart_count_bar_event, this);
+		//sparepart cost
+
+		spaCost = new wxTextCtrl(this, wxID_ANY, "cost", wxPoint(100, 400), wxSize(300, -1));
+		wxStaticText* spaCostLabel = new wxStaticText(this, wxID_ANY, "spare part cost", wxPoint(500, 400), wxDefaultSize);
+		spaCost->SetForegroundColour(wxColour(128, 128, 128));//text colour
+		spaCost->Bind(wxEVT_SET_FOCUS, &SpaInsertPanel::Press_on_sparePart_cost_bar_event, this);//the event
+
+		//insert button
+		insert_button = new wxButton(this, wxID_ANY, "insert", wxPoint(500, 580), wxDefaultSize);
+		insert_button->Bind(wxEVT_BUTTON, &SpaInsertPanel::Hit_button_event, this);
+		//repeated part from the search page panel
+		Hit_button_Sound = new wxMediaCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize);//properties of the mediaplayer
+		Hit_button_Sound->SetPlaybackRate(1.0);//the media player
+		Hit_button_Sound->Load("C:\\ProjData\\FirstGUI\\assets\\Punch Sound Effect(MP3_160K).mp3");//loading the sound using the directory 
+
+
+
+
+
+
+	}
+private:
+
+	void Press_on_sparePart_name_bar_event(wxFocusEvent& event)//when user press on the text field the event will occurs
+	{
+		spaName->SetValue("");
+		spaName->SetForegroundColour(wxColour(255, 255, 255));
+		spaName->SetBackgroundColour(wxColour(128, 128, 128));
+		spaName->Unbind(wxEVT_SET_FOCUS, &SpaInsertPanel::Press_on_sparePart_name_bar_event, this);//I unbinded the event because i need it one time "if you remove this line, you won't be able to write a text"
+
+
+
+	}
+	void Press_on_sparePart_count_bar_event(wxFocusEvent& event)//when user press on the text field the event will occurs
+	{
+		spaCount->SetValue("");
+		spaCount->SetForegroundColour(wxColour(255, 255, 255));
+		spaCount->SetBackgroundColour(wxColour(128, 128, 128));
+		spaCount->Unbind(wxEVT_SET_FOCUS, &SpaInsertPanel::Press_on_sparePart_count_bar_event, this);
+
+	}
+	void Press_on_sparePart_cost_bar_event(wxFocusEvent& event)//when user press on the text field the event will occurs
+	{
+		spaCost->SetValue("");
+		spaCost->SetForegroundColour(wxColour(255, 255, 255));
+		spaCost->SetBackgroundColour(wxColour(128, 128, 128));
+		spaCost->Unbind(wxEVT_SET_FOCUS, &SpaInsertPanel::Press_on_sparePart_cost_bar_event, this);
+
+	}
+	void Hit_button_event(wxCommandEvent& event)//you must pass an event parameter
+	{
+
+		Hit_button_Sound->Play();//play the sound
+	}
+};
+
+
+
+class MainFrame : public wxFrame//the frame which will hold all the nootbooks(nootbooks hold panels)
+{
+public:
+	MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)//constructor of the frame(usually the code is put inside the constructor)
+	{
+		wxNotebook* notebook = new wxNotebook(this, wxID_ANY);//the notbook is a container for all the panels
+		SpaInsertPanel* panel1 = new SpaInsertPanel(notebook, "welcome to our factory system", "Thanks for visiting our humble program", "by:", "Zaynab essam (the team leader) 2221001623\nAdham Ahmed Mohamed 221001783\nDoaa mahdy 221000424\nhabiba yahya 221001614\nsamer ahmed elhossany 221001697");//first page of the panel that holds text as a parameter"its inside the panel
+
+
+		notebook->AddPage(panel1, "main page");//adding the first page to the notebook which is panel 1 with a title of main page
+
+
+
+
+
+
+	}
+
+
+
+
+};
+
+
+
+
+
+//entry point
+
+class App : public wxApp
+{
+public:
+	bool OnInit()
+	{
+		MainFrame* mainFrame = new MainFrame("Factory system");
+		mainFrame->Show();//show the window
+		mainFrame->SetClientSize(1100, 650);//setClientSize(width,height): control the size of the frame
+		mainFrame->Center();//intialize the frame location at the center 
+
+		//creating icon(extra)
+		wxString icon_path = "C:\\ProjData\\FirstGUI\\assets\\factory_icon.ico";//put the path in the wxString dataType
+		wxIcon icon;//data type icon
+		icon.LoadFile(icon_path, wxBITMAP_TYPE_ICO);//use load file to get the path and set the icon type
+		mainFrame->SetIcon(icon);//display icon
+
+		return true;//keep the window running
+		// if you return false the program will be closed
+
+	}
+
+};
+wxIMPLEMENT_APP(App);// determine which class is our application to run

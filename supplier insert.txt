@@ -1,0 +1,180 @@
+#include <wx/wx.h>
+#include <wx/notebook.h>//our magic book
+#include <wx/spinctrl.h>
+#include<wx/mediactrl.h>
+
+
+
+
+class SupInsertPanel : public wxPanel// class for the panel of the main page (first page in our magic book)
+{
+public:
+	//already declared in the search bar
+	wxMediaCtrl* Hit_button_Sound;
+	wxTextCtrl* supCode;
+	wxTextCtrl* supAddress;
+	wxTextCtrl* supName;
+	wxTextCtrl* supPhoneNumber;
+	wxTextCtrl* supEmail;
+	wxButton* insert_button;
+	SupInsertPanel(wxNotebook* parent, const wxString& label, const wxString& thank, const wxString& by, const wxString& names) : wxPanel(parent)//creating panel"the second parameter is a label of type wxString which will be a text in the panel"
+	{
+		
+		//3 textbox
+		//box sizer for each label and textbox
+		//wxBoxSizer* Name_and_label = new wxBoxSizer(wxHORIZONTAL);
+		//title of the insert page
+		wxStaticText* title = new wxStaticText(this,wxID_ANY,"Insert the details of our new Supplier s'il vous plait! :-)",wxPoint(200,60),wxDefaultSize);
+		wxFont Font_title(15, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+		title->SetFont(Font_title);
+		//supplier name
+		 supName = new wxTextCtrl(this,wxID_ANY,"name", wxPoint(100,100), wxSize(300, -1));
+		wxStaticText* supNameLabel = new wxStaticText(this, wxID_ANY, "supplier name", wxPoint(500,100), wxDefaultSize);
+		supName->SetForegroundColour(wxColour(128, 128, 128));
+		supName->Bind(wxEVT_SET_FOCUS, &SupInsertPanel::Press_on_supplier_name_bar_event, this);
+		
+		//supplier address
+		 supAddress = new wxTextCtrl(this, wxID_ANY, "address", wxPoint(100,200), wxSize(300, -1));
+		wxStaticText* supAddressLabel = new wxStaticText(this, wxID_ANY, "supplier address", wxPoint(500,200), wxDefaultSize);
+		supAddress->SetForegroundColour(wxColour(128, 128, 128));
+		supAddress->Bind(wxEVT_SET_FOCUS, &SupInsertPanel::Press_on_supplier_address_bar_event, this);
+		//supplier code
+
+		 supCode = new wxTextCtrl(this, wxID_ANY, "code", wxPoint(100,300), wxSize(300, -1));
+		wxStaticText* supCodeLabel = new wxStaticText(this, wxID_ANY, "supplier code", wxPoint(500,300), wxDefaultSize);
+		supCode->SetForegroundColour(wxColour(128, 128, 128));//text colour
+		supCode->Bind(wxEVT_SET_FOCUS, &SupInsertPanel::Press_on_supplier_code_bar_event, this);//the event
+
+		//supplier phone number
+		supPhoneNumber = new wxTextCtrl(this, wxID_ANY, "phone number", wxPoint(100, 400), wxSize(300, -1));
+		wxStaticText* supPhoneNumberLabel = new wxStaticText(this, wxID_ANY, "supplier phone number", wxPoint(500, 400), wxDefaultSize);
+		supPhoneNumber->SetForegroundColour(wxColour(128, 128, 128));
+		supPhoneNumber->Bind(wxEVT_SET_FOCUS, &SupInsertPanel::Press_on_supplier_phone_number_bar_event, this);
+		
+		//supplier email
+		supEmail = new wxTextCtrl(this, wxID_ANY, "email", wxPoint(100, 500), wxSize(300, -1));
+		wxStaticText* supEmailLabel = new wxStaticText(this, wxID_ANY, "supplier email", wxPoint(500, 500), wxDefaultSize);
+		supEmail->SetForegroundColour(wxColour(128, 128, 128));
+		supEmail->Bind(wxEVT_SET_FOCUS, &SupInsertPanel::Press_on_supplier_email_bar_event, this);
+
+		//insert button
+		 insert_button= new wxButton(this,wxID_ANY,"insert",wxPoint(500,580),wxDefaultSize);
+		 insert_button->Bind(wxEVT_BUTTON, &SupInsertPanel::Hit_button_event, this);
+		//repeated part from the search page panel
+		Hit_button_Sound = new wxMediaCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize);//properties of the mediaplayer
+		Hit_button_Sound->SetPlaybackRate(1.0);//the media player
+		Hit_button_Sound->Load("C:\\ProjData\\FirstGUI\\assets\\Punch Sound Effect(MP3_160K).mp3");//loading the sound using the directory 
+
+		
+
+		
+
+
+	}
+private:
+	
+	void Press_on_supplier_name_bar_event(wxFocusEvent& event)//when user press on the text field the event will occurs
+	{
+		supName->SetValue("");
+		supName->SetForegroundColour(wxColour(255, 255, 255));
+		supName->SetBackgroundColour(wxColour(128, 128, 128));
+		supName->Unbind(wxEVT_SET_FOCUS, &SupInsertPanel::Press_on_supplier_name_bar_event, this);//I unbinded the event because i need it one time "if you remove this line, you won't be able to write a text"
+	
+		
+	
+	}
+	void Press_on_supplier_address_bar_event(wxFocusEvent& event)//when user press on the text field the event will occurs
+	{
+		supAddress->SetValue("");
+		supAddress->SetForegroundColour(wxColour(255, 255, 255));
+		supAddress->SetBackgroundColour(wxColour(128, 128, 128));
+		supAddress->Unbind(wxEVT_SET_FOCUS, &SupInsertPanel::Press_on_supplier_address_bar_event, this);
+	
+	}
+	void Press_on_supplier_code_bar_event(wxFocusEvent& event)//when user press on the text field the event will occurs
+	{
+		supCode->SetValue("");
+		supCode->SetForegroundColour(wxColour(255, 255, 255));
+		supCode->SetBackgroundColour(wxColour(128, 128, 128));
+		supCode->Unbind(wxEVT_SET_FOCUS, &SupInsertPanel::Press_on_supplier_code_bar_event, this);
+	
+	}
+
+	void Press_on_supplier_phone_number_bar_event(wxFocusEvent& event)//when user press on the text field the event will occurs
+	{
+		supPhoneNumber->SetValue("");
+		supPhoneNumber->SetForegroundColour(wxColour(255, 255, 255));
+		supPhoneNumber->SetBackgroundColour(wxColour(128, 128, 128));
+		supPhoneNumber->Unbind(wxEVT_SET_FOCUS, &SupInsertPanel::Press_on_supplier_phone_number_bar_event, this);
+
+	}
+
+	void Press_on_supplier_email_bar_event(wxFocusEvent& event)//when user press on the text field the event will occurs
+	{
+		supEmail->SetValue("");
+		supEmail->SetForegroundColour(wxColour(255, 255, 255));
+		supEmail->SetBackgroundColour(wxColour(128, 128, 128));
+		supEmail->Unbind(wxEVT_SET_FOCUS, &SupInsertPanel::Press_on_supplier_email_bar_event, this);
+
+	}
+	void Hit_button_event(wxCommandEvent& event)//you must pass an event parameter
+	{
+
+		Hit_button_Sound->Play();//play the sound
+	}
+};
+
+
+
+class MainFrame : public wxFrame//the frame which will hold all the nootbooks(nootbooks hold panels)
+{
+public:
+	MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)//constructor of the frame(usually the code is put inside the constructor)
+	{
+		wxNotebook* notebook = new wxNotebook(this, wxID_ANY);//the notbook is a container for all the panels
+		SupInsertPanel* panel1 = new SupInsertPanel(notebook, "welcome to our factory system", "Thanks for visiting our humble program", "by:", "Zaynab essam (the team leader) 2221001623\nAdham Ahmed Mohamed 221001783\nDoaa mahdy 221000424\nhabiba yahya 221001614\nsamer ahmed elhossany 221001697");//first page of the panel that holds text as a parameter"its inside the panel
+
+
+		notebook->AddPage(panel1, "main page");//adding the first page to the notebook which is panel 1 with a title of main page
+
+
+
+
+
+
+	}
+
+
+
+
+};
+
+
+
+
+
+//entry point
+
+class App : public wxApp
+{
+public:
+	bool OnInit()
+	{
+		MainFrame* mainFrame = new MainFrame("Factory system");
+		mainFrame->Show();//show the window
+		mainFrame->SetClientSize(1100, 650);//setClientSize(width,height): control the size of the frame
+		mainFrame->Center();//intialize the frame location at the center 
+
+		//creating icon(extra)
+		wxString icon_path = "C:\\ProjData\\FirstGUI\\assets\\factory_icon.ico";//put the path in the wxString dataType
+		wxIcon icon;//data type icon
+		icon.LoadFile(icon_path, wxBITMAP_TYPE_ICO);//use load file to get the path and set the icon type
+		mainFrame->SetIcon(icon);//display icon
+
+		return true;//keep the window running
+		// if you return false the program will be closed
+
+	}
+
+};
+wxIMPLEMENT_APP(App);// determine which class is our application to run

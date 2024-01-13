@@ -1,0 +1,211 @@
+#include <wx/wx.h>
+#include <wx/notebook.h>//our magic book
+#include <wx/spinctrl.h>
+#include<wx/mediactrl.h>
+#include <wx/grid.h>
+
+
+
+class SearchHistoryPanel : public wxPanel// class for the panel of the main page (first page in our magic book)
+{
+public:
+	wxMediaCtrl* Hit_button_Sound;//the sound effect of the button
+	wxButton* Search_history_delete_button;// the button that will delete the history
+	int ctr=0;//counter that will be used to add rows
+	wxGrid* Search_history_grid;//the search history table
+	wxCheckBox* Rewrite_the_history;
+	wxStaticText* warning_message;
+	wxStaticText* title;
+
+
+	wxButton* Addbtn;
+
+
+
+	SearchHistoryPanel(wxNotebook* parent) : wxPanel(parent)//creating panel"the second parameter is a label of type wxString which will be a text in the panel"
+	{
+
+
+
+		
+		Addbtn = new wxButton(this, wxID_ANY, "add a cell", wxPoint(90, 300), wxDefaultSize);
+		Addbtn->Bind(wxEVT_BUTTON, &SearchHistoryPanel::add_grid_row,this);
+		//the font of the title
+		title = new wxStaticText(this, wxID_ANY, "welcome to the Search history", wxPoint(300, -1), wxDefaultSize);//label with default size 
+		wxFont title_font(18, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+		title->SetFont(title_font);
+
+		//warning message
+		warning_message = new wxStaticText(this,wxID_ANY,"Warning: A person with no history is a person with no future.\n Do you realy want to delete the history?",wxPoint(150,580),wxDefaultSize);
+		warning_message->SetForegroundColour(wxColor(255,0,0));
+		warning_message->Hide();
+
+		Search_history_grid = new wxGrid(this,wxID_ANY,wxPoint(250,100), wxSize(600, 450));
+		Search_history_grid->CreateGrid(ctr,1);//create grid with ctr(zero) rows and 1 column
+		Search_history_grid->SetColLabelValue(0,"search history");//set the header of the column to "search history". Note: index 0 is the header column
+		
+		
+
+		// delete button
+		Search_history_delete_button = new wxButton(this, wxID_ANY, "Delete", wxPoint(500, 600));
+		Search_history_delete_button->Bind(wxEVT_BUTTON, &SearchHistoryPanel::Hit_button_event, this);
+		Search_history_delete_button->Enable(false);
+
+		//the rewrite the history checkbox
+		Rewrite_the_history = new wxCheckBox(this,wxID_ANY,"do you really want to delete the history?",wxPoint(600,600),wxDefaultSize);
+		Rewrite_the_history->SetForegroundColour(wxColor(255, 0, 0));
+		Rewrite_the_history->Bind(wxEVT_CHECKBOX, &SearchHistoryPanel::Warning_checkBox, this);
+
+
+	
+
+
+
+
+
+
+		//sound effect
+
+		Hit_button_Sound = new wxMediaCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize);//properties of the mediaplayer
+		Hit_button_Sound->SetPlaybackRate(1.0);//the media player
+		Hit_button_Sound->Load("C:\\ProjData\\FirstGUI\\assets\\Punch Sound Effect(MP3_160K).mp3");//loading the sound using the directory 
+		//using the event  you created and linking it with the button
+
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+private:
+	bool IsGridEmpty(wxGrid* grid)
+	{
+		return grid->GetNumberRows() == 1 && grid->GetNumberCols() == 1;
+	}
+
+	void Hit_button_event(wxCommandEvent& event)//you must pass an event parameter
+	{
+
+		Hit_button_Sound->Play();//play the sound
+
+		
+	
+	
+		if (Search_history_grid->GetNumberRows() > 0)//check if the grid is empty or not
+		{
+			// Clear the grid
+			Search_history_grid->ClearGrid();
+			Search_history_grid->DeleteRows(0, Search_history_grid->GetNumberRows());
+
+			
+			Search_history_grid->AppendRows(1);
+			Rewrite_the_history->SetValue(false);
+			warning_message->Hide();
+			Search_history_delete_button->Enable(false);
+		
+			ctr = 0;
+		}
+
+		//event.Skip();
+			
+
+		
+	}
+
+	void Warning_checkBox(wxCommandEvent& event)//you must pass an event parameter
+	{
+		
+			warning_message->Show();
+			Search_history_delete_button->Enable(true);
+		
+
+	}
+
+
+
+	void add_grid_row(wxCommandEvent& event)//you must pass an event parameter
+	{
+
+		Hit_button_Sound->Play();//play the sound
+
+
+	
+
+		Search_history_grid->AppendRows(1);
+		Search_history_grid->SetCellValue(ctr, 0, "hello everybody my name is samer");
+
+		Search_history_grid->SetReadOnly(ctr, 0);
+
+		Search_history_grid->SetColSize(0, 500);
+		ctr++;
+		
+
+
+	}
+
+
+
+};
+
+
+
+class MainFrame : public wxFrame//the frame which will hold all the nootbooks(nootbooks hold panels)
+{
+public:
+	MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)//constructor of the frame(usually the code is put inside the constructor)
+	{
+		wxNotebook* notebook = new wxNotebook(this, wxID_ANY);//the notbook is a container for all the panels
+		SearchHistoryPanel* supSearch = new SearchHistoryPanel(notebook);//first page of the panel that holds text as a parameter"its inside the panel
+
+
+		notebook->AddPage(supSearch, "main page");//adding the first page to the notebook which is panel 1 with a title of main page
+
+
+
+
+
+
+
+	}
+
+
+
+
+};
+
+
+
+
+
+//entry point
+
+class App : public wxApp
+{
+public:
+	bool OnInit()
+	{
+		MainFrame* mainFrame = new MainFrame("Factory system");
+		mainFrame->Show();//show the window
+		mainFrame->SetClientSize(1100, 650);//setClientSize(width,height): control the size of the frame
+		mainFrame->Center();//intialize the frame location at the center 
+
+		//creating icon(extra)
+		wxString icon_path = "C:\\ProjData\\FirstGUI\\assets\\factory_icon.ico";//put the path in the wxString dataType
+		wxIcon icon;//data type icon
+		icon.LoadFile(icon_path, wxBITMAP_TYPE_ICO);//use load file to get the path and set the icon type
+		mainFrame->SetIcon(icon);//display icon
+
+		return true;//keep the window running
+		// if you return false the program will be closed
+
+	}
+
+};
+wxIMPLEMENT_APP(App);// determine which class is our application to run
